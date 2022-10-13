@@ -1,13 +1,24 @@
+input.onButtonPressed(Button.A, function () {
+    STOP = 1
+    OLED.clear()
+    OLED.writeStringNewLine("STOPED")
+    basic.showIcon(IconNames.No)
+    music.playTone(988, music.beat(BeatFraction.Double))
+})
 /**
  * Po zmáčknutí A+B
  * 
  * Se všechno zastaví
  */
-input.onButtonPressed(Button.AB, function () {
-    STOP = 1
+input.onButtonPressed(Button.B, function () {
+    STOP = 0
     OLED.clear()
-    OLED.writeStringNewLine("STOPED")
-    basic.showIcon(IconNames.No)
+    OLED.writeStringNewLine("STARTED")
+    basic.showIcon(IconNames.Yes)
+    music.playTone(988, music.beat(BeatFraction.Whole))
+    basic.pause(400)
+    music.playTone(988, music.beat(BeatFraction.Whole))
+    OLED.clear()
 })
 let WaterTankNOWATER = 0
 let Waterleveltank = 0
