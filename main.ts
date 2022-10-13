@@ -1,6 +1,18 @@
+/**
+ * Po zmáčknutí A+B
+ * 
+ * Se všechno zastaví
+ */
+input.onButtonPressed(Button.AB, function () {
+    STOP = 1
+    OLED.clear()
+    OLED.writeStringNewLine("STOPED")
+    basic.showIcon(IconNames.No)
+})
 let WaterTankNOWATER = 0
 let Waterleveltank = 0
 let Waterlevelkytka = 0
+let STOP = 0
 OLED.init(128, 64)
 basic.showLeds(`
     # # # # #
@@ -21,12 +33,15 @@ basic.clearScreen()
 music.playTone(988, music.beat(BeatFraction.Whole))
 basic.pause(400)
 music.playTone(988, music.beat(BeatFraction.Whole))
+basic.showIcon(IconNames.Yes)
 basic.forever(function () {
-    Waterlevelkytka = Environment.ReadSoilHumidity(AnalogPin.P1)
-    Waterleveltank = Environment.ReadWaterLevel(AnalogPin.P2)
-    OLED.writeStringNewLine("Flower Level" + ("" + Waterlevelkytka))
-    OLED.writeStringNewLine("Tank Level:" + ("" + Waterleveltank))
-    basic.pause(5000)
+    if (STOP == 0) {
+        Waterlevelkytka = Environment.ReadSoilHumidity(AnalogPin.P1)
+        Waterleveltank = Environment.ReadWaterLevel(AnalogPin.P2)
+        OLED.writeStringNewLine("Flower Level" + ("" + Waterlevelkytka))
+        OLED.writeStringNewLine("Tank Level:" + ("" + Waterleveltank))
+        basic.pause(5000)
+    }
 })
 /**
  * Když je "WaterTankNOWATER" "0" tak se spustí další command když je "Waterlevelkytka" ">30"
@@ -34,14 +49,16 @@ basic.forever(function () {
  * tak se zobrazí text flower is dry a čerpadlo pustí vodu dokud vlhkost pudy nebude 70%
  */
 basic.forever(function () {
-    if (WaterTankNOWATER == 0) {
-        if (Waterlevelkytka > 30) {
-            OLED.writeStringNewLine("Flower is dry")
-            OLED.writeStringNewLine("Flower Level:" + ("" + Waterlevelkytka))
-            basic.pause(2000)
-            pins.digitalWritePin(DigitalPin.P3, 1)
-            if (Waterlevelkytka == 70) {
-                pins.digitalWritePin(DigitalPin.P3, 0)
+    if (STOP == 0) {
+        if (WaterTankNOWATER == 0) {
+            if (Waterlevelkytka > 30) {
+                OLED.writeStringNewLine("Flower is dry")
+                OLED.writeStringNewLine("Flower Level:" + ("" + Waterlevelkytka))
+                basic.pause(2000)
+                pins.digitalWritePin(DigitalPin.P3, 1)
+                if (Waterlevelkytka == 70) {
+                    pins.digitalWritePin(DigitalPin.P3, 0)
+                }
             }
         }
     }
@@ -60,13 +77,15 @@ basic.forever(function () {
  * "0" Tím pádem se muže používat čerpadlo
  */
 basic.forever(function () {
-    if (Waterleveltank > 30) {
-        WaterTankNOWATER = 1
-        OLED.writeStringNewLine("ERROR :" + "Malo vody v nadrzy")
-        OLED.writeStringNewLine("Nemuzu zalit kytku")
-        OLED.writeStringNewLine("")
-        OLED.writeStringNewLine("FIX :" + "Dopln nadrz vodou")
-    } else {
-        WaterTankNOWATER = 0
+    if (STOP == 0) {
+        if (Waterleveltank > 30) {
+            WaterTankNOWATER = 1
+            OLED.writeStringNewLine("ERROR :" + "Malo vody v nadrzy")
+            OLED.writeStringNewLine("Nemuzu zalit kytku")
+            OLED.writeStringNewLine("")
+            OLED.writeStringNewLine("FIX :" + "Dopln nadrz vodou")
+        } else {
+            WaterTankNOWATER = 0
+        }
     }
 })
