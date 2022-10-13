@@ -3,11 +3,11 @@ let Waterlevelkytka = 0
 OLED.init(128, 64)
 basic.showLeds(`
     # # # # #
-        # # # # #
-        # # # # #
-        # # # # #
-        # # # # #
-`)
+    # # # # #
+    # # # # #
+    # # # # #
+    # # # # #
+    `)
 for (let index = 0; index < 3; index++) {
     OLED.writeStringNewLine("Loading.")
     basic.pause(500)
@@ -20,8 +20,7 @@ basic.clearScreen()
 music.playTone(988, music.beat(BeatFraction.Whole))
 basic.pause(500)
 music.playTone(988, music.beat(BeatFraction.Whole))
-basic.forever(function on_forever() {
-    
+basic.forever(function () {
     Waterlevelkytka = Environment.ReadSoilHumidity(AnalogPin.P1)
     Waterleveltank = Environment.ReadWaterLevel(AnalogPin.P2)
     OLED.writeStringNewLine("Flower Level" + ("" + Waterlevelkytka))
@@ -35,14 +34,11 @@ basic.forever(function on_forever() {
         if (Waterlevelkytka == 70) {
             pins.digitalWritePin(DigitalPin.P3, 0)
         }
-        
     }
-    
     if (Waterleveltank > 30) {
-        OLED.writeStringNewLine("ERROR :" + "Water level in tank is too low")
-        OLED.writeStringNewLine("I can't start a creep sequence")
+        OLED.writeStringNewLine("ERROR :" + "Malo vody v nadrzy")
+        OLED.writeStringNewLine("Nemuzu zalit kytku")
         OLED.writeStringNewLine("")
-        OLED.writeStringNewLine("FIX :" + "Refill the tank")
+        OLED.writeStringNewLine("FIX :" + "Dopln nadrz vodou")
     }
-    
 })
