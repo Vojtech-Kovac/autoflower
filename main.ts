@@ -31,26 +31,23 @@ basic.showLeds(`
     # # # # #
     `)
 for (let index = 0; index < 3; index++) {
-    OLED.writeStringNewLine("Loading.")
-    basic.pause(500)
-    OLED.writeStringNewLine("Loading..")
-    basic.pause(500)
-    OLED.writeStringNewLine("Loading...")
-    basic.pause(500)
+	
 }
 basic.clearScreen()
 music.playTone(988, music.beat(BeatFraction.Whole))
 basic.pause(400)
 music.playTone(988, music.beat(BeatFraction.Whole))
 basic.showIcon(IconNames.Yes)
+let stop_basic_info = 0
 basic.forever(function () {
     if (STOP == 0) {
         Waterlevelkytka = Environment.ReadSoilHumidity(AnalogPin.P1)
         Waterleveltank = Environment.ReadWaterLevel(AnalogPin.P2)
-        OLED.writeStringNewLine("Flower Level" + ("" + Waterlevelkytka))
-        OLED.writeStringNewLine("Tank Level:" + ("" + Waterleveltank))
-        basic.pause(5000)
+        OLED.writeStringNewLine("Flower Level:" + Waterlevelkytka)
+        OLED.writeStringNewLine("Tank Level:" + Waterleveltank)
     }
+    basic.pause(5000)
+    OLED.clear()
 })
 // Když je "WaterTankNOWATER" "0" tak se spustí další command když je "Waterlevelkytka" ">30"
 // 
@@ -58,14 +55,10 @@ basic.forever(function () {
 basic.forever(function () {
     if (STOP == 0) {
         if (WaterTankNOWATER == 0) {
-            if (Waterlevelkytka > 30) {
+            if (Waterlevelkytka < 30) {
                 OLED.writeStringNewLine("Flower is dry")
-                OLED.writeStringNewLine("Flower Level:" + ("" + Waterlevelkytka))
+                OLED.writeStringNewLine("Flower Level:" + Waterlevelkytka)
                 basic.pause(2000)
-                pins.digitalWritePin(DigitalPin.P3, 1)
-                if (Waterlevelkytka == 70) {
-                    pins.digitalWritePin(DigitalPin.P3, 0)
-                }
             }
         }
     }
@@ -87,17 +80,17 @@ basic.forever(function () {
     if (STOP == 0) {
         if (Waterleveltank > 30) {
             WaterTankNOWATER = 1
+            stop_basic_info = 1
             OLED.writeStringNewLine("ERROR :" + "Malo vody v nadrzy")
             OLED.writeStringNewLine("ERROR :" + "Nemuzu zalit kytku")
             OLED.writeStringNewLine("")
             OLED.writeStringNewLine("FIX :" + "Dopln nadrz vodou")
         } else {
             WaterTankNOWATER = 0
+            stop_basic_info = 0
         }
     }
 })
 basic.forever(function () {
-    OLED.writeStringNewLine("Den:" + ("" + RTC_DS1307.getTime(RTC_DS1307.TimeType.DAY)))
-    OLED.writeStringNewLine("Hodiny:" + ("" + RTC_DS1307.getTime(RTC_DS1307.TimeType.HOUR)) + ("" + RTC_DS1307.getTime(RTC_DS1307.TimeType.HOUR)))
-    OLED.writeStringNewLine("Rok:" + ("" + RTC_DS1307.getTime(RTC_DS1307.TimeType.YEAR)))
+	
 })
