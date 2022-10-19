@@ -12,23 +12,17 @@ input.onButtonPressed(Button.A, function () {
 // 
 // Se všechno zastaví
 input.onButtonPressed(Button.B, function () {
-    STOP = 1
     OLED.clear()
     OLED.writeStringNewLine("STOPED")
     basic.showIcon(IconNames.No)
     music.playTone(988, music.beat(BeatFraction.Double))
+    STOP = 1
+    OLED.clear()
 })
-let Waterleveltank = 0
+let teplota = 0
 let Waterlevelkytka = 0
 let STOP = 0
 OLED.init(128, 64)
-basic.showLeds(`
-    # # # # #
-    # # # # #
-    # # # # #
-    # # # # #
-    # # # # #
-    `)
 OLED.drawLoading(25)
 basic.pause(200)
 OLED.drawLoading(50)
@@ -44,13 +38,18 @@ let stop_basic_info = 0
 OLED.clear()
 basic.forever(function () {
     Waterlevelkytka = Environment.ReadSoilHumidity(AnalogPin.P1)
-    Waterleveltank = Environment.ReadWaterLevel(AnalogPin.P3)
+    teplota = Environment.octopus_BME280(Environment.BME280_state.BME280_temperature_C)
 })
 basic.forever(function () {
     if (stop_basic_info == 0) {
         if (STOP == 0) {
             OLED.writeStringNewLine("Flower Level:" + Waterlevelkytka)
-            OLED.writeStringNewLine("Tank Level:" + Waterleveltank)
+            OLED.newLine()
+            OLED.newLine()
+            OLED.newLine()
+            OLED.newLine()
+            OLED.newLine()
+            OLED.writeStringNewLine("Pokojova teplota" + Environment.octopus_BME280(Environment.BME280_state.BME280_temperature_C))
         }
         basic.pause(5000)
         OLED.clear()
@@ -78,23 +77,4 @@ basic.forever(function () {
             }
         }
     }
-})
-// Takzavně
-// 
-// Pokud je v nádrží málo vody konkrétně méně než 30% tak nastaví "WaterTankNOWATER"
-// 
-// na "1" tím se zakáže používaní čerpadla
-// 
-// a napíše ERROR že nemá vodu
-// 
-// Jinak nastaví "WaterTankNOWATER"
-// 
-// "0" Tím pádem se muže používat čerpadlo
-// 
-// když
-basic.forever(function () {
-	
-})
-basic.forever(function () {
-	
 })
